@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>Business Card Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://unpkg.com/pdf-lib"></script>
+  <script src="https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.js"></script>
+  
+  <!-- Website CSS -->
+  <style>
+    @font-face {
+      font-family: "RMfont";
+      src: url("BEB_____.ttf")
+    }
+    body {
+        font-family: "RMfont"
+    }
+    h1 {
+        font-family: "RMfont"
+    }
+    p {
+        font-family: "RMfont"
+    }
+    input {
+      font-family: "RMfont"
+    }
+    select {
+      font-family: "RMfont"
+    }
+</style>
+</head>
+
+<body>
+  <h1>Stratus Business Card Generator</h1>
+  
+  <!-- RMgraphics links -->
+  <p style="color: rgb(158, 158, 158);"> Created by <a href= "https://www.rmgraphics.net/">RMgraphics</a></p>
+  <img src="RM Graphics RM White TEXT.png" alt="RMgraphics Logo" style="position: absolute; top: 10px; right: 10px; width: 100px; height: auto;">
+  <p>Fill in the information below to generate a personalized business card in a PDF format. For the best experience, it is
+    recommended that you use a desktop computer.</p>
+  
+  <!-- PDF inputs -->
+  <form id="businessCardForm">
+    <label for="firstName">First Name:</label>
+    <input type="text" id="firstName" placeholder="JOHN" required />
+    <br /><br />
+    <label for="lastName">Last Name:</label>
+    <input type="text" id="lastName" placeholder="DOE" required />
+    <br /><br />
+    <label for="title">Title:</label>
+    <input type="text" id="title" placeholder="Unit Franchisee" />
+    <br /><br />
+    <label for="email">Email:</label>
+    <input type="email" id="email" placeholder="email@domain.com" />
+    <br /><br />
+    <label for="phone">Phone Number:</label>
+    <input type="text" id="phone" placeholder="888-888-8888" />
+    <br /><br />
+    <label for="mobile">Mobile Number:</label>
+    <input type="text" id="mobile" placeholder="805-490-7900" />
+    <br /><br />
+
+    <!-- Dropdown for QR Code (PNG version) -->
+    <label for="qrCode">Select QR Code:</label>
+    <select id="qrCode">
+      <option value="Default.png">Default</option>
+      <option value="Portland.png">Portland</option>
+      <option value="Richmond.png">Richmond</option>
+      <option value="Salem.png">Salem</option>
+      <option value="Seattle.png">Seattle</option>
+      <option value="Tacoma.png">Tacoma</option>
+    </select>
+    <p>*Select your office location to get a corresponding QR code.</p>
+    <br /><br />
+  
+    <button type="button" onclick="generatePdf()">Generate PDF</button>
+  </form>
+  <p>Once you finish please download the PDF, email it to us, and we will proccess it. </p>
+  <p>Please navigate back to the <a href="https://store.rmgraphics.net/store/aa280915-1949-4d09-9fd0-7afe760c26ad">store</a>, to finish placing your order. </p>
+  <br /><br />
+  <iframe id="pdfPreview" style="width: 100%; height: 500px;"></iframe>
+  
+  <script>
+
+    //Java code
+    async function generatePdf() {
+      // Load the existing PDF & fonts
+      const existingPdfBytes = await fetch('BC Stratus Building Solutions DEFAULT 1.pdf').then(res => res.arrayBuffer());
+      const customFont = await fetch('OpenSans-Regular.ttf').then(res => res.arrayBuffer());
+      const customFontB = await fetch('OpenSans-Bold.ttf').then(res => res.arrayBuffer());
+      const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+      pdfDoc.registerFontkit(fontkit);
+
+      // Get form data
+      const firstName = document.getElementById('firstName').value.toUpperCase();
+      const lastName = document.getElementById('lastName').value.toUpperCase();
+      const title = document.getElementById('title').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const mobile = document.getElementById('mobile').value;
+      const qrCodeSelection = document.getElementById('qrCode').value;
+
+      // Embed the fonts
+      const font = await pdfDoc.embedFont(customFont);
+      const fontb = await pdfDoc.embedFont(customFontB);
+
+      // Get the first page
+      const pages = pdfDoc.getPages();
+      const page = pages[0];
+
+      // Draw white rectangles over the old text to cover it
+      page.drawRectangle({
+        x: 15,
+        y: 72,
+        width: 144,
+        height: 150,
+        color: PDFLib.rgb(1, 1, 1)
+      });
+
+      // First & last name centered
+      let x = 45;
+      const firstNameWidth = fontb.widthOfTextAtSize(firstName, 10);
+      const lastNameWidth = font.widthOfTextAtSize(lastName, 10);
+      const totalnamewidth = firstNameWidth + lastNameWidth + 2;
+      x = (144 - totalnamewidth) / 2;
+
+      // Draw the updated information on the PDF
+      page.drawText(firstName, {
+        x: x,
+        y: 175,
+        size: 10,
+        font: fontb,
+        color: PDFLib.rgb(0, 0, 0)
+      });
+
+      page.drawText(lastName, {
+        x: x + 2 + firstNameWidth,
+        y: 175,
+        size: 10,
+        font: font,
+        color: PDFLib.rgb(0, 0, 0)
+      });
+
+      // Title text centered
+      let titlex = 0;
+      const titleWidth = font.widthOfTextAtSize(title, 8);
+      titlex = (144 - titleWidth) / 2;
+
+      page.drawText(title, {
+        x: titlex,
+        y: 165,
+        size: 8,
+        font: font,
+        color: PDFLib.rgb(0, 0, 0)
+      });
+
+      // Email text centered
+      let emailx = 0;
+      const emailWidth = font.widthOfTextAtSize(email, 8);
+      emailx = (144 - emailWidth) / 2;
+      page.drawText(email, {
+        x: emailx,
+        y: 129,
+        size: 8,
+        font: font,
+        color: PDFLib.rgb(0, 0, 0)
+      });
+
+      // Draw phone number if provided
+      if (phone) {
+        page.drawText(`Phone: ${phone}`, {
+          x: 30,
+          y: 119,
+          size: 8,
+          font: font,
+          color: PDFLib.rgb(0, 0, 0)
+        });
+      }
+
+      // Draw mobile number if provided
+      if (mobile) {
+        page.drawText(`Mobile: ${mobile}`, {
+          x: 30,
+          y: 110,
+          size: 8,
+          font: font,
+          color: PDFLib.rgb(0, 0, 0)
+        });
+      }
+
+      // Load and draw the selected QR code PNG
+      const qrCodeBytes = await fetch(`qr_code/${qrCodeSelection}`).then(res => res.arrayBuffer());
+      const qrImage = await pdfDoc.embedPng(qrCodeBytes);
+
+      // Draw the QR code image onto the page
+      const { width, height } = page.getSize(); // math
+      page.drawImage(qrImage, {
+        x: width / 2 - 25,
+        y: 18,
+        width: 50,
+        height: 50
+      });
+
+      // Serialize the PDFDocument to bytes (a Uint8Array)
+      const pdfBytes = await pdfDoc.save();
+
+      // Convert the PDF to a Data URI and display it in an iframe
+      const pdfDataUri = URL.createObjectURL(new Blob([pdfBytes], { type: "application/pdf" }));
+      document.getElementById('pdfPreview').src = pdfDataUri;
+    }
+  </script>
+</body>
+
+</html>
