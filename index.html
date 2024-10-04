@@ -8,37 +8,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://unpkg.com/pdf-lib"></script>
   <script src="https://unpkg.com/@pdf-lib/fontkit/dist/fontkit.umd.js"></script>
-  
+  <link rel="icon" href="RM Graphics RM White TEXT.png">
   <!-- Website CSS -->
   <style>
     @font-face {
       font-family: "RMfont";
       src: url("BEB_____.ttf")
     }
+    @font-face {
+      font-family: "Interstate";
+      font-style: normal;
+      src: url("Inter_18pt-Medium.ttf");
+    }
     body {
-        font-family: sans-serif
+        font-family: "Interstate"
     }
     h1 {
-        font-family: sans-serif
+        font-family: "Interstate"
     }
     p {
-        font-family: sans-serif
+        font-family: "Interstate"
     }
     input {
-      font-family: sans-serif
+      font-family: "Interstate"
     }
     select {
-      font-family: sans-serif
+      font-family: "Interstate"
     }
 </style>
 </head>
 
 <body>
-  <h1>Stratus Business Card Generator</h1>
-  
-  <!-- RMgraphics links -->
-  <p style="font-family: RMfont; color: rgb(158, 158, 158);" > Created by <a href= "https://www.rmgraphics.net/">RM Graphics</a></p>
   <img src="RM Graphics RM White TEXT.png" alt="RMgraphics Logo" style="position: absolute; top: 10px; left: 10px; width: 100px; height: auto;">
+  <h1 style = "margin-left: 140px; ">Stratus Business Card Generator</h1>
+  <p style="color: rgb(158, 158, 158);  margin-left: 140px; font-family: RMfont"> Created by <a href= "https://www.rmgraphics.net/">RMgraphics</a></p>
   <p>Fill in the information below to generate a personalized business card in a PDF format. For the best experience, it is
     recommended that you use a desktop computer.</p>
   
@@ -79,7 +82,7 @@
     <button type="button" onclick="generatePdf()">Generate PDF</button>
   </form>
   <p>Once you finish please download the PDF, email it to us, and we will proccess it. </p>
-  <p>Please navigate back to the <a href="https://store.rmgraphics.net/store/aa280915-1949-4d09-9fd0-7afe760c26ad">store</a>, to finish placing your order. </p>
+  <p>Please navigate back to the <a href="https://store.rmgraphics.net/store/66d3b5fa-61b5-4a42-8659-e416c3e500ec">store</a>, to finish placing your order. </p>
   <br /><br />
   <iframe id="pdfPreview" style="width: 100%; height: 500px;"></iframe>
   
