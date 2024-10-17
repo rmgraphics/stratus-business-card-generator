@@ -91,12 +91,27 @@
     //Java code
     async function generatePdf() {
       // Load the existing PDF & fonts
-      const existingPdfBytes = await fetch('BC Stratus Building Solutions DEFAULT 1.pdf').then(res => res.arrayBuffer());
+      const PdfBytes1 = await fetch('BC Stratus Building Solutions DEFAULT 1.pdf').then(res => res.arrayBuffer());
+      const PdfBytes2 = await fetch('BC Stratus Building Solutions DEFAULT 2.pdf').then(res => res.arrayBuffer());
       const customFont = await fetch('OpenSans-Regular.ttf').then(res => res.arrayBuffer());
       const customFontB = await fetch('OpenSans-Bold.ttf').then(res => res.arrayBuffer());
-      const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+      
+      // Load the first PDF document
+      const pdfDoc = await PDFLib.PDFDocument.load(PdfBytes1);
+
+      // Load the second PDF and copy its pages into the first one
+      const pdfDoc2 = await PDFLib.PDFDocument.load(PdfBytes2);
+      const pages2 = await pdfDoc.copyPages(pdfDoc2, pdfDoc2.getPageIndices());
+
+      // Add the pages from pdfDoc2 to the end of pdfDoc
+      pages2.forEach((page) => {
+      pdfDoc.addPage(page);
+    });
+
+      // Register fonts
       pdfDoc.registerFontkit(fontkit);
 
+    
       // Get form data
       const firstName = document.getElementById('firstName').value.toUpperCase();
       const lastName = document.getElementById('lastName').value.toUpperCase();
@@ -196,7 +211,7 @@
 
       // Load and draw the selected QR code PNG
       const qrCodeBytes = await fetch(`qr_code/${qrCodeSelection}`).then(res => res.arrayBuffer());
-      const qrImage = await pdfDoc.embedPng(qrCodeBytes);
+      const qrImage = await pdfDoc.embedSvg(qrCodeBytes);
 
       // Draw the QR code image onto the page
       const { width, height } = page.getSize(); // math
