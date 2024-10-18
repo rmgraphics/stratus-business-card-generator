@@ -211,7 +211,7 @@
 
       // Load and draw the selected QR code PNG
       const qrCodeBytes = await fetch(`qr_code/${qrCodeSelection}`).then(res => res.arrayBuffer());
-      const qrImage = await pdfDoc.embedSvg(qrCodeBytes);
+      const qrImage = await pdfDoc.embedPng(qrCodeBytes);
 
       // Draw the QR code image onto the page
       const { width, height } = page.getSize(); // math
