@@ -35,6 +35,16 @@
     select {
       font-family: "Interstate"
     }
+    #qrCodeSelector img {
+      width: 150px;
+      height: auto;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    #qrCodeSelector img.selected {
+      border: 2px solid rgb(255, 0, 0);
+    }
 </style>
 </head>
 
@@ -67,16 +77,25 @@
     <br /><br />
 
     <!-- Dropdown for QR Code (PNG version) -->
-    <label for="qrCode">Select QR Code:</label>
-    <select id="qrCode">
-      <option value="Default.png">Default</option>
-      <option value="Portland.png">Portland</option>
-      <option value="Richmond.png">Richmond</option>
-      <option value="Salem.png">Salem</option>
-      <option value="Seattle.png">Seattle</option>
-      <option value="Tacoma.png">Tacoma</option>
-    </select>
+     <!--<label for="qrCode">Select QR Code:</label> -->
+     <!-- <select id="qrCode">-->
+      <!-- <option value="Default.png">Default</option>-->
+      <!-- <option value="Portland.png">Portland</option>-->
+      <!-- <option value="Richmond.png">Richmond</option>-->
+      <!-- <option value="Salem.png">Salem</option>-->
+      <!-- <option value="Seattle.png">Seattle</option>-->
+      <!-- <option value="Tacoma.png">Tacoma</option>-->
+    <!-- </select>-->
     <p>*Select your office location to get a corresponding QR code.</p>
+    <div id="qrCodeSelector" style="display: flex; gap: 10px; margin-bottom: 20px;">
+      <img src="qr_code/Default.png" alt="Default QR Code" onclick="selectQrCode('Default.png')" />
+      <img src="qr_code/Portland.png" alt="Portland QR Code" onclick="selectQrCode('Portland.png')" />
+      <img src="qr_code/Richmond.png" alt="Richmond QR Code" onclick="selectQrCode('Richmond.png')" />
+      <img src="qr_code/Salem.png" alt="Salem QR Code" onclick="selectQrCode('Salem.png')" />
+      <img src="qr_code/Seattle.png" alt="Seattle QR Code" onclick="selectQrCode('Seattle.png')" />
+      <img src="qr_code/Tacoma.png" alt="Tacoma QR Code" onclick="selectQrCode('Tacoma.png')" />
+    </div>
+    
     <br /><br />
   
     <button type="button" onclick="generatePdf()">Generate PDF</button>
@@ -89,6 +108,21 @@
   <script>
 
     //Java code
+
+    //QRcode
+    let selectedQrCode = 'Default.png'; // Default selection
+
+    function selectQrCode(qrCode) {
+      selectedQrCode = qrCode;
+
+    // Highlight the selected image
+    const images = document.querySelectorAll('#qrCodeSelector img');
+    images.forEach(img => img.style.border = '2px solid transparent'); // Reset borders
+    const selectedImage = document.querySelector(`img[src="qr_code/${qrCode}"]`);
+    if (selectedImage) {
+      selectedImage.style.border = '3px solid red'; // Highlight selected image
+    }
+    }
     async function generatePdf() {
       // Load the existing PDF & fonts
       const PdfBytes1 = await fetch('BC Stratus Building Solutions DEFAULT 1.pdf').then(res => res.arrayBuffer());
@@ -111,7 +145,6 @@
       // Register fonts
       pdfDoc.registerFontkit(fontkit);
 
-    
       // Get form data
       const firstName = document.getElementById('firstName').value.toUpperCase();
       const lastName = document.getElementById('lastName').value.toUpperCase();
@@ -119,7 +152,7 @@
       const email = document.getElementById('email').value;
       const phone = document.getElementById('phone').value;
       const mobile = document.getElementById('mobile').value;
-      const qrCodeSelection = document.getElementById('qrCode').value;
+      //const qrCodeSelection = document.getElementById('qrCode').value;
 
       // Embed the fonts
       const font = await pdfDoc.embedFont(customFont);
@@ -210,7 +243,7 @@
       }
 
       // Load and draw the selected QR code PNG
-      const qrCodeBytes = await fetch(`qr_code/${qrCodeSelection}`).then(res => res.arrayBuffer());
+      const qrCodeBytes = await fetch(`qr_code/${selectedQrCode}`).then(res => res.arrayBuffer());
       const qrImage = await pdfDoc.embedPng(qrCodeBytes);
 
       // Draw the QR code image onto the page
